@@ -1,0 +1,307 @@
+$(function(){
+	'use strict';
+	/*
+	Template Name: Agisa
+	Author: t3theme
+	Version: 1.0
+	Author URI:themeforest.net/user/t3theme/portfolio
+	Email: ndktheme@gmail.com 
+	*/
+	
+	/*---------------------------------------
+    Menu
+    -----------------------------------------*/
+	var a=0;
+	$('li.drp > a').on('click',function(e){		
+		var ths = $(this).parent();
+		if(isMobile())
+		{ 
+			a=a+250;
+			removeC(ths.siblings());
+			addC(ths);				
+			aimate_right($('ul.menu'),a);			
+			$('.return').fadeIn();	
+			return false;			
+		}
+	});	
+	$('.return').on('click',function(e){	
+		a=a-250;
+		if(a>-1){	
+			aimate_right($('ul.menu'),a);					
+		}
+		if(a==0){
+			$('.return').fadeOut();	
+		}
+	});
+	$('.menu-close').on('click',function(e){	
+		aimate_right($('.menu-wrap'),'-250');
+		removeC($('.menu-main'));		
+	});	
+	
+	$('.menu-open').on('click',function(e){	
+		aimate_right($('.menu-wrap'),'0');
+		addC($('.menu-main'));
+		widthMenu();		
+	});
+	$('.menu-main').on('click',function(e){	
+		if($(e.target).hasClass('active')){
+			$('.menu-close').trigger('click');
+		}	
+	});
+	function widthMenu(){
+		if($(window).width() <= 250)
+		{
+			$('.menu-wrap').css('width','100%');
+		}
+		else
+		{
+			$('.menu-wrap').css('width','250px');
+		}
+		if(!isMobile()){
+			$('.menu-wrap,.menu').removeAttr('style');
+			$('.menu-main').removeClass('active');
+		}
+	}
+	
+	/*---------------------------------------
+    Search
+    -----------------------------------------*/
+	$('.search-overlay').on('click',function(e){		
+		if($(e.target).hasClass('search-overlay')){
+			$(this).fadeOut();
+			$('.search-txt').val('');
+		}		
+	});
+	$('.search-open').on('click',function(e){	
+		$('.search-overlay').fadeIn();
+		$('.search-txt').focus();
+	});
+	$('input.search-txt').keyup(function(e) { 
+		if(e.which === 13 && $(this).val()!='') {
+			e.preventDefault();
+			$('form').submit();
+		}
+  	});
+	$('input.search-txt').keydown(function(e) {
+		$('.search-btn').css('color','#fff');
+  	});
+	
+	/*---------------------------------------
+    Image gallery
+    -----------------------------------------*/
+	$('.slider-thumb img').on('mouseover',function(e){	
+		$('.larger-img  a').attr('href',$(this).attr('src'));
+		$('.larger-img  img').attr('src',$(this).attr('src'));
+	});
+	
+	/*---------------------------------------
+    Slider
+    -----------------------------------------*/
+	$('.owl-carousel').each( function(){
+		$(this).owlCarousel({
+			dots:JSON.parse($(this).attr('data-dots')),
+			margin:JSON.parse($(this).attr('data-margin')),
+			nav:JSON.parse($(this).attr('data-nav')),
+			center:JSON.parse($(this).attr('data-center')),
+			mouseDrag:JSON.parse($(this).attr('data-darg')),
+			loop:JSON.parse($(this).attr('data-loop')),
+			autoWidth:JSON.parse($(this).attr('data-autowidth')),
+			stagePadding:JSON.parse($(this).attr('data-stagepadding')),
+			autoplay:JSON.parse($(this).attr('data-autoplay')),
+			items:1,
+			responsive:{
+				0:{
+					items:$(this).attr('data-mobile')					
+				},
+				767:{
+					items:$(this).attr('data-tablet')
+				},
+				1000:{
+					items:$(this).attr('data-desktopsmall')
+				},
+				1200:{
+					items:$(this).attr('data-desktop')
+				}
+			}
+		})
+	});	
+	$('.owl-carousel.owl-active-1').on('translated.owl.carousel', function(event) {
+		var ths=$(this);
+		ths.find($('.owl-item .card')).attr('class','card bgs-y bg--default').find('i.fa').attr('class','fa fa-quote-right f-60');
+    	ths.find($('.owl-item.active')).eq(0).find('.card').attr('class','card bgs-w').find('i.fa').attr('class','fa fa-quote-right f-60 color-default');
+	})
+	
+	/*---------------------------------------
+    Image animate
+    -----------------------------------------*/
+	function imgHeight(){
+		$('.wd-group .wd-item,.icns-cir-full .icn').each(function(){
+			$(this).css('height',$(this).innerWidth());
+		});
+	}
+	imgHeight();
+	
+	/*---------------------------------------
+    Set background image
+    -----------------------------------------*/
+	$('[data-image-src]').each(function(){
+		var img_source=$(this).attr('data-image-src');
+		if (typeof img_source !== typeof undefined && img_source !== false)	{
+			$(this).css('background-image','url(' + img_source + ')');
+		}
+	});
+	
+	/*---------------------------------------
+    Reloader	
+    -----------------------------------------*/		
+	$(window).on('load', function(){
+		$('.preloader').delay(500).fadeOut('slow');				
+	});		
+	
+	/*---------------------------------------
+    Active accordion
+    -----------------------------------------*/
+	$('.collapse').on('show.bs.collapse', function(){
+		addC($(this).parent());
+  	});
+	$('.collapse').on('hide.bs.collapse', function(){
+    	removeC($(this).parent());
+  	});	
+
+	/*---------------------------------------
+    Counter up
+    -----------------------------------------*/
+	$('.counter').counterUp({
+    	delay: 10,
+    	time: 1000
+	});
+			
+	/*---------------------------------------
+    Zomm image
+    -----------------------------------------*/
+	 $('.image-zoom').magnificPopup({
+		type:'image',
+		gallery: {
+			enabled: true
+		},
+		zoom: {
+			enabled: true,
+			duration: 300, 
+			opener: function(element) {
+				return element.find('img');
+			}
+		}
+	}); 
+	
+	/*---------------------------------------
+    DatePicker
+    -----------------------------------------*/
+	$('.datepicker').datepicker();	
+	
+	/*---------------------------------------
+	Wibndow resize
+	-----------------------------------------*/
+	$(window).resize(function(){
+		imgHeight();
+		widthMenu();		
+	});
+	
+	/*---------------------------------------
+    Increment/decrement number
+    -----------------------------------------*/
+	var num=0;
+	function qlt_plus(ths){
+		if(num<100)		{
+			num=parseInt(ths.val())+1;
+		}
+		ths.val(num);
+	}
+	function qlt_minus(ths){
+		if(num<100 && num>0){
+			num=parseInt(ths.val())-1;
+		}
+		ths.val(num);
+	}
+	$('.qlt-plus').click(function(e){
+		e.preventDefault();
+		setTimeout(qlt_plus($(this).parent().prev()), 100);
+	});
+	$('.qlt-minus').click(function(e){
+		e.preventDefault();
+		setTimeout(qlt_minus($(this).parent().prev()), 100);
+	});
+	
+	/*---------------------------------------
+    Dropdown menu
+    -----------------------------------------*/
+	// Prevent the default action of an element from happening
+	$('.dropdown-menu').click(function(e){
+        e.stopPropagation();
+	});
+	// Hide elements when mouse leave
+	$('.dropdown-menu').mouseleave(function(e){
+       $(this).removeClass('show');
+	});
+    // Get value in dropdown list
+	$('.dropdown_list .ul-item').on('click',function(){
+		$(this).parents('.dropdown').find('input').val($(this).text());
+	});
+	
+	/*---------------------------------------
+    Animate from Right/left
+    -----------------------------------------*/
+	function aimate_right(e,d){
+		e.animate({right: d+'px'});
+	}
+	function aimate_left(e,d){
+		e.animate({left: d+'px'});
+	}
+
+	/*---------------------------------------
+    Add/remove (.active) class to elements
+    -----------------------------------------*/
+	function addC(c){
+		c.addClass('active');
+	}
+	function removeC(c){
+		c.removeClass('active');
+	}
+	
+	/*---------------------------------------
+	Check the device is mobile or browser viewport < 990px
+	-----------------------------------------*/
+	function isMobile(){
+		if((/Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i).test(navigator.userAgent || navigator.vendor || window.opera) || $(window).width() < 990){
+			return true;
+		} 
+	}		
+	
+	/*---------------------------------------
+	Contact Form
+	-----------------------------------------*/
+	$('#submit').on('click',function(e){
+		e.preventDefault();		
+		var url='';	 // Ex: var url='http://cssxyz.com/contact.php';	 
+		if(url){
+			var username = $("#username").val();
+			var email = $("#email").val();
+			var phone = $("#phone").val();
+			var address = $("#address").val();
+			var title = $("#title").val();
+			var content = $("#content").val(); 
+			var valid = true;
+			$('.form-elements').removeClass('is-invalid');	
+			$('.form-elements').each(function(){
+				if($(this).val()==""){
+					valid = false;
+					$(this).addClass('is-invalid');
+				}
+			});
+			if(valid && $('.input-check').is(":checked")){
+				$.post(url,{'username':username,'email':email,'phone':phone,'address':address,'title':title,'content':content},function(result) {
+					alert(result);
+				});
+			}
+		}
+	});
+});
